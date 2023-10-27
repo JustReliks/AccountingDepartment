@@ -60,6 +60,8 @@ public class WebSecurityConfig {
                                 RoleAuthorities.EDITOR.name())
                         .requestMatchers("/api/departments/**").hasAnyAuthority(RoleAuthorities.VIEWER.name(),
                                 RoleAuthorities.EDITOR.name())
+                        .requestMatchers("/api/employees/**").hasAnyAuthority(RoleAuthorities.VIEWER.name(),
+                                RoleAuthorities.EDITOR.name())
 
                         .anyRequest()
                         .authenticated()
