@@ -20,8 +20,8 @@ CREATE TABLE employees(
 
 CREATE TABLE departments_employees(
 	id serial NOT NULL CONSTRAINT departments_employees_pk PRIMARY KEY,
-	department_id integer,
-	employee_id	integer,
+	department_id integer NOT NULL,
+	employee_id	integer NOT NULL,
 	FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE,
 	FOREIGN KEY (employee_id) REFERENCES employees (id) ON DELETE CASCADE
 );

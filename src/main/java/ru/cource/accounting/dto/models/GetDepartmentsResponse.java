@@ -9,10 +9,10 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-public class GetProjectsResponse {
+public class GetDepartmentsResponse {
 
     private int pageCount;
     private int page;
-    private List<ProjectDto> projects;
+    private List<DepartmentDto> departments;
 
 }

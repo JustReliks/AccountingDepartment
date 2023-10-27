@@ -16,4 +16,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query(value = "SELECT * FROM projects p ORDER BY id", nativeQuery = true)
     Page<Project> loadListOfProjects(Pageable pageable);
 
+    @Query(value = "SELECT * FROM calculate_profit(?1)", nativeQuery = true)
+    double calculateIncomeOfProject(long id);
+
 }
