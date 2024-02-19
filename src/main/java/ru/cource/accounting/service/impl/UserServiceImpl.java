@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public JwtUserDetails authenticate(String username, String password) {
         String jwt;
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,

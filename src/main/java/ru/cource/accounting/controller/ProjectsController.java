@@ -1,7 +1,10 @@
 package ru.cource.accounting.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -52,8 +55,11 @@ public class ProjectsController {
             project.setDateEndReal(DateFormatUtils.formatToTimeStamp(projectDto.getDateEndReal(), ProjectDto.format));
         }
 
-
-        return ResponseEntity.ok(projectsService.createProject(project));
+        try {
+            return ResponseEntity.ok(projectsService.createProject(project));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @PostMapping("/change")
@@ -76,8 +82,19 @@ public class ProjectsController {
         if (StringUtils.hasText(projectDto.getDateEndReal())) {
             project.setDateEndReal(DateFormatUtils.formatToTimeStamp(projectDto.getDateEndReal(), ProjectDto.format));
         }
+        try {
+            return ResponseEntity.ok(projectsService.createProject(project));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
-        return ResponseEntity.ok(projectsService.createProject(project));
+    @GetMapping("/report")
+    public ResponseEntity<ByteArrayResource> generateReport() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "force-download"));
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Report.xlsx");
+        return new ResponseEntity<>(projectsService.generateReport(), headers, HttpStatus.CREATED);
     }
 
     @PostMapping("/delete")
@@ -86,7 +103,11 @@ public class ProjectsController {
         if (project.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
         }
-        projectsService.deleteProject(project.get());
-        return ResponseEntity.ok(true);
+        try {
+            projectsService.deleteProject(project.get());
+            return ResponseEntity.ok(true);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }

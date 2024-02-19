@@ -3,6 +3,7 @@ package ru.cource.accounting.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.cource.accounting.dto.security.JwtRequestDto;
 import ru.cource.accounting.security.JwtUserDetails;
 import ru.cource.accounting.service.LoginService;
@@ -21,6 +22,7 @@ public class LoginServiceImpl implements LoginService {
     private final UserDetailsServiceImpl jwtUserDetailsService;
 
     @Override
+    @Transactional
     public JwtUserDetails login(JwtRequestDto user) {
         String password = new String(Base64.getDecoder().decode(user.getPassword()), StandardCharsets.UTF_8);
         return userService.authenticate(user.getUsername(), password);

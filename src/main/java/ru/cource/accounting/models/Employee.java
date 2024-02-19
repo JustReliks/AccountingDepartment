@@ -12,13 +12,6 @@ import java.util.Set;
 @Setter
 public class Employee {
 
-//    id serial NOT NULL CONSTRAINT employees_pk PRIMARY KEY,
-//    first_name VARCHAR(20) NOT NULL,
-//    last_name VARCHAR(20) NOT NULL,
-//    father_name VARCHAR(20) NOT NULL,
-//    position VARCHAR(50) NOT NULL,
-//    salary NUMERIC(18, 2) NOT NULL
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

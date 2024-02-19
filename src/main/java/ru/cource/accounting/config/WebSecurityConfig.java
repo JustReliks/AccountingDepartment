@@ -26,7 +26,9 @@ import java.util.List;
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-    private static final String[] WHITE_LIST_URL = {"/api/registration", "/api/auth/**", "/api/auth"};
+    private static final String[] WHITE_LIST_URL = {"/api/registration", "/api/auth/**",
+            "/api/auth", "/api/projects/report","/api/departments/report",
+            "/api/employees/report","/api/logs/download"};
 
     private final AuthTokenFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
@@ -37,7 +39,7 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "ResponseType"));
         configuration.setExposedHeaders(List.of("x-auth-token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

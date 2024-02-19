@@ -1,11 +1,13 @@
 package ru.cource.accounting.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.cource.accounting.dto.models.DepartmentDto;
 import ru.cource.accounting.dto.models.EmployeeDto;
 import ru.cource.accounting.dto.models.GetEmployeesResponse;
 import ru.cource.accounting.models.Department;
@@ -32,6 +34,7 @@ public class EmployeesController {
         if (page < 0 || count < 0) {
             return ResponseEntity.badRequest().body(null);
         }
+
         return ResponseEntity.ok(employeesService.getEmployees(page, count));
     }
 
@@ -39,8 +42,8 @@ public class EmployeesController {
     public ResponseEntity<Long> createEmployee(@RequestBody EmployeeDto employeeDto) {
         Employee employee = new Employee();
         Set<Department> departments = new HashSet<>();
-        for (DepartmentDto dto : employeeDto.getDepartments()) {
-            Optional<Department> departmentOpt = departmentService.getDepartment(dto.getId());
+        for (long departId : employeeDto.getDepartments()) {
+            Optional<Department> departmentOpt = departmentService.getDepartment(departId);
             if (departmentOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -48,12 +51,15 @@ public class EmployeesController {
         }
         employee.setDepartments(departments);
         employee.setPosition(employeeDto.getPosition());
-        employee.setFirstName(employee.getFirstName());
-        employee.setLastname(employee.getLastname());
-        employee.setFatherName(employee.getFatherName());
+        employee.setFirstName(employeeDto.getFirstName());
+        employee.setLastname(employeeDto.getLastName());
+        employee.setFatherName(employeeDto.getFatherName());
         employee.setSalary(employeeDto.getSalary());
-
-        return ResponseEntity.ok(employeesService.createEmployee(employee));
+        try {
+            return ResponseEntity.ok(employeesService.createEmployee(employee));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @PostMapping("/update")
@@ -64,8 +70,8 @@ public class EmployeesController {
         }
         Employee employee = employeeOpt.get();
         Set<Department> departments = new HashSet<>();
-        for (DepartmentDto dto : employeeDto.getDepartments()) {
-            Optional<Department> departmentOpt = departmentService.getDepartment(dto.getId());
+        for (long departId : employeeDto.getDepartments()) {
+            Optional<Department> departmentOpt = departmentService.getDepartment(departId);
             if (departmentOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -77,8 +83,11 @@ public class EmployeesController {
         employee.setLastname(employee.getLastname());
         employee.setFatherName(employee.getFatherName());
         employee.setSalary(employeeDto.getSalary());
-
-        return ResponseEntity.ok(employeesService.createEmployee(employee));
+        try {
+            return ResponseEntity.ok(employeesService.createEmployee(employee));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @PostMapping("/delete")
@@ -89,9 +98,17 @@ public class EmployeesController {
         }
         try {
             employeesService.deleteEmployee(employeeOptional.get());
+            return ResponseEntity.ok(true);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(false);
+            return ResponseEntity.badRequest().body(false);
         }
-        return ResponseEntity.ok(true);
     }
+    @GetMapping("/report")
+    public ResponseEntity<ByteArrayResource> generateReport() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "force-download"));
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Report.xlsx");
+        return new ResponseEntity<>(employeesService.generateReport(), headers, HttpStatus.CREATED);
+    }
+
 }

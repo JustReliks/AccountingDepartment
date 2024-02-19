@@ -4,6 +4,7 @@ package ru.cource.accounting.dto.models;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import ru.cource.accounting.models.Department;
 import ru.cource.accounting.models.Employee;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class EmployeeDto {
     private String fatherName;
     private String position;
     private double salary;
-    private List<DepartmentDto> departments;
+    private List<Long> departments;
 
     public static EmployeeDto toDto(Employee employee) {
         EmployeeDto dto = new EmployeeDto();
@@ -31,7 +32,7 @@ public class EmployeeDto {
         dto.setLastName(employee.getLastname());
         dto.setFatherName(employee.getFatherName());
 
-        dto.setDepartments(employee.getDepartments().stream().map(DepartmentDto::toDto).collect(Collectors.toList()));
+        dto.setDepartments(employee.getDepartments().stream().map(Department::getId).collect(Collectors.toList()));
 
         return dto;
     }

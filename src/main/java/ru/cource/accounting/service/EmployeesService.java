@@ -1,6 +1,8 @@
 package ru.cource.accounting.service;
 
+import org.springframework.core.io.ByteArrayResource;
 import ru.cource.accounting.dto.models.GetEmployeesResponse;
+import ru.cource.accounting.models.Department;
 import ru.cource.accounting.models.Employee;
 
 import java.util.List;
@@ -18,5 +20,8 @@ public interface EmployeesService {
     Optional<Employee> getEmployee(long id);
 
     void deleteEmployee(Employee employee);
+
+    ByteArrayResource generateReport();
+
 
 }
